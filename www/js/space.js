@@ -115,8 +115,8 @@ function getPlaces(){
                                         );
               alert("venue"+venues[i]['venue']['name']);
               }
-              })
-});
+              });
+
     
                 
 }
