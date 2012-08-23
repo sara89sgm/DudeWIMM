@@ -1,12 +1,35 @@
 var nameSongSelected='';
 var hrefSong='';
-var lat='51.523777878854176';
-var long='-0.04055500030517578';
+
 var placeId='';
 var placeName='';
 var idSongObj='';
 
+/* FOURSQUARE */
 
+var config = {
+apiKey: 'T453P2YRIR0F3EAT4EHD2NX3RAUJIAJATTCJX2DM5H3CYHVY',
+authUrl: 'http://www.dudewimm.com',
+apiUrl: 'https://api.foursquare.com/'
+};
+
+/* Attempt to retrieve access token from URL. */
+function doAuthRedirect() {
+    var redirect = window.location.href.replace(window.location.hash, '');
+    var url = config.authUrl + 'oauth2/authenticate?response_type=token&client_id=' + config.apiKey +
+    '&redirect_uri=' + encodeURIComponent(redirect) +
+    '&state=' + encodeURIComponent($.bbq.getState('req') || 'users/self');
+    window.location.href = url;
+};
+
+if ($.bbq.getState('access_token')) {
+    // If there is a token in the state, consume it
+    var token = $.bbq.getState('access_token');
+    $.bbq.pushState({}, 2)
+} else if ($.bbq.getState('error')) {
+} else {
+    doAuthRedirect();
+}
 
 
 
@@ -61,30 +84,51 @@ function getLocations()
 {
     
     if (navigator.geolocation) {
-        
-        navigator.geolocation.getCurrentPosition(savePosition);
+        navigator.geolocation.getCurrentPosition(function(data) {
+                                                  localStorage.lat = data['coords']['latitude'];
+                                                 localStorage.lng = data['coords']['longitude'];
+                                                 getPlaces();}
+                                                 );
     } else {
         error('Geolocation is not supported.');
     }
 }
 
 
-function savePosition(position)
-{
-    alert("inside");
-    localStorage.lat= position.coords.latitude;
-    localStorage.long= position.coords.longitude;	
-    
-    getPlaces();
-    
-}
+
 
 
 
 
 function getPlaces(){
     
-    
+    /* Query foursquare API for venue recommendations near the current location. */
+    $.getJSON(config.apiUrl + 'v2/venues/explore?ll=' + localStorage.lat + ',' + localStorage.lng + '&oauth_token=' + window.token, {}, function(data) {
+              venues = data['response']['groups'][0]['items'];
+              /* Place marker for each venue. */
+              for (var i = 0; i < venues.length; i++) {
+              /* Get marker's location */
+              var latLng = new L.LatLng(
+                                        venues[i]['venue']['location']['lat'],
+                                        venues[i]['venue']['location']['lng']
+                                        );
+              /* Build icon for each icon */
+              var leafletIcon = L.Icon.extend({
+                                              iconUrl: venues[i]['venue']['categories'][0]['icon'],
+                                              shadowUrl: null,
+                                              iconSize: new L.Point(32,32),
+                                              iconAnchor: new L.Point(16, 41),
+                                              popupAnchor: new L.Point(0, -51)
+                                              });
+              var icon = new leafletIcon();
+              var marker = new L.Marker(latLng, {icon: icon})
+              .bindPopup(venues[i]['venue']['name'], { closeButton: false })
+              .on('mouseover', function(e) { this.openPopup(); })
+              .on('mouseout', function(e) { this.closePopup(); });
+              map.addLayer(marker);
+              }
+              })
+});
     
                 
 }
