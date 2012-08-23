@@ -19,7 +19,7 @@
 
 <script src="js/parse-1.0.15.js"></script>
 
-<script type="text/javascript" src="js/musju.js"></script>
+<script type="text/javascript" src="js/wimm.js"></script>
 <script type="text/javascript" src="js/auth.js"></script>
        <script src="js/iscroll.js" type="text/javascript"></script>
     <script type="text/javascript" src="js/jquery.mobile.iscrollview.js"></script>
@@ -63,48 +63,34 @@
 	<!-- HOME PAGE -->
 	<div data-role="page" id="home">
 		<div data-theme="a" data-role="header">
-			<h3>Musju</h3>
+			<h3>WIMM</h3>
 			<div data-role="navbar">
 				<ul>
 					<li><a class="ui-btn-active ui-state-persist" href="#home">
-							Home </a></li>
-					<li><a href="#playlist"> Playlist </a></li>
-					<li><a href="#pubs"> Pubs </a></li>
+							Lost in... </a></li>
+					<li><a href="#timeP"> Time </a></li>
+					<li><a href="#placeP"> Space </a></li>
 				</ul>
 			</div>
 		</div>
 		<div data-role="content">
 
 			<a href="#playlistShow" data-role="button"
-				onclick="return getPlaylists();">Show playlists</a>
-			<div data-role="fieldcontain" id="requestSong">
-				
-                
-                <div  id="searchSong" class="ui-widget jqueryui">
-                    <p> SEARCH <input  type="text" id="spotify_song_search" class="jqueryUI"/> <a onclick="requestSong()" class="">Request!</a>
-                    </p>
-                    <a id='track'></a>​</div>
-               
-                
-                
-			</div>
-
+				onclick="return getPlaylists();">Lost in Time</a>
+		
+            <a href="#playlistShow" data-role="button"
+				onclick="return getPlaylists();">Lost in Space</a>
 			<br /> 
 		</div>
 		<div data-theme="a" data-role="footer" data-position="fixed">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#page1" data-theme="a"> Profile </a></li>
-					<li><a href="#page1" data-theme="a"> Friends </a></li>
-				</ul>
-			</div>
+		
 		</div>
 	</div>
 	
 	<!-- SING UP PAGE -->
 	<div data-role="page" id="singup">
 		<div data-theme="a" data-role="header">
-			<h3>Musju</h3>
+			<h3>Wimm</h3>
 
 		</div>
 		<div data-role="content">
@@ -140,16 +126,16 @@
 	</div>
     
     
-    <!-- PLAYLISTS SHOW PAGE -->
-	<div data-role="page" id="playlistShow">
+    <!-- LOST IN TIME PAGE -->
+	<div data-role="page" id="timeP">
 		<div data-theme="a" data-role="header">
-			<h3>Musju</h3>
+			<h3>WIMM</h3>
 			<div data-role="navbar">
 				<ul>
-					<li><a href="#home"> Home </a></li>
-					<li><a class="ui-btn-active ui-state-persist" href="#playlist">
-                        Playlist </a></li>
-					<li><a href="#pubs"> Pubs </a></li>
+					<li><a href="#home"> Lost in... </a></li>
+					<li><a class="ui-btn-active ui-state-persist" href="#timeP">
+                        Time </a></li>
+					<li><a href="#placeP"> Space </a></li>
 				</ul>
 			</div>
 		</div>
@@ -160,52 +146,28 @@
 			</ul>
 		</div>
 		<div data-theme="a" data-role="footer" data-position="fixed">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#page1" data-theme="a"> Profile </a></li>
-					<li><a href="#page1" data-theme="a"> Friends </a></li>
-				</ul>
-			</div>
+			
             
 		</div>
 	</div>
     
-    <!-- PUBS  PAGE -->
-	<div data-role="page" id="homeP">
+    <!-- LOST IN TIME  PAGE -->
+
+	<div data-role="page" id="placeP">
 		<div data-theme="a" data-role="header">
 			<h3>Musju</h3>
 			<div data-role="navbar">
 				<ul>
-					<li><a class="ui-btn-active ui-state-persist" href="#home">
-							Home </a></li>
-					<li><a href="#playlist"> Playlist </a></li>
-					<li><a href="#pubs"> Pubs </a></li>
-				</ul>
-			</div>
-		</div>
-		<div data-role="content" id="showPlaylists"></div>
-		<div data-theme="a" data-role="footer" data-position="fixed">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#page1" data-theme="a"> Profile </a></li>
-					<li><a href="#page1" data-theme="a"> Friends </a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div data-role="page" id="pubs">
-		<div data-theme="a" data-role="header">
-			<h3>Musju</h3>
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#home"> Home </a></li>
-					<li><a href="#playlist"> Playlist </a></li>
-					<li><a class="ui-btn-active ui-state-persist" href="#pubs">
-							Pubs </a></li>
+					<li><a href="#home"> Lost in... </a></li>
+					<li><a href="#timeP"> Time </a></li>
+					<li><a class="ui-btn-active ui-state-persist" href="#placeP">
+							Space </a></li>
 				</ul>
 			</div>
 		</div>
 		<div data-role="content">
+            <a href="#playlistShow" data-role="button"
+				onclick="return getPlaylists();">Lost in Time</a>
 			<img
 				src="https://maps.googleapis.com/maps/api/staticmap?center=Madison, WI&amp;zoom=14&amp;size=288x200&amp;markers=Madison, WI&amp;sensor=false"
 				width="288" height="200" />
@@ -229,35 +191,82 @@
 		</div>
 	</div>
     
-    <!-- PLAYLIST PAGE -->
-	<div data-role="page" id="playlist">
-		<div data-theme="a" data-role="header">
-			<h3>Musju</h3>
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#home"> Home </a></li>
-					<li><a class="ui-btn-active ui-state-persist" href="#playlist">
-							Playlist </a></li>
-					<li><a href="#pubs"> Pubs </a></li>
-				</ul>
-			</div>
-		</div>
-		<div data-iscroll="" data-role="content">
-			<ul data-role="listview" data-divider-theme="b" data-inset="true" id="tracksPlaylist" >
-				
+    
+    <div data-role="page" id="spotify">
+        <div data-role="header" data-theme="a">
+            <h1 data-theme="a">GeoMusic</h1>
+        </div><!-- /header -->
+        <div data-role="content">
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <h1><label for="songName">What song are you dancing?:</label></h1>
+                    <input type="text" name="song" id="songName" value=""  />
+                </div> <a href="#spotifyresults" data-role="button" onclick="searchSong();" >Search Song!</a>
+                
+            </fieldset>
+            
+        </div></div>
+    
+    <div data-role="page" id="spotifyresults">
+        <div data-role="header" data-theme="a">
+            <h1 data-theme="a">GeoMusic</h1>
+        </div><!-- /header -->
+        <div data-role="content">
+            
+            
+            <div class="content-primary">	
+                <ul data-role="listview" id="listResults">
+                </ul>
+            </div><!--/content-primary -->	
+        </div>
+    </div>
+    
+    <div data-role="page" id="location">
+        <div data-role="header" data-theme="a">
+            <h1 data-theme="a">GeoMusic: Where are ypu dancing?</h1>
+        </div><!-- /header -->
+        <div data-role="content">
+            
+            
+            <div class="content-primary">
+                <h3> Where are you dancing?</h3>
+                <ul data-role="listview" id="listResultsLocations">
+                </ul>
+            </div><!--/content-primary -->	
+        </div>
+    </div>
+    
+    <div data-role="page" id="presend">
+        <div data-role="header" data-theme="a">
+            <h1 data-theme="a">GeoMusic</h1>
+        </div><!-- /header -->
+        <div data-role="content">
+            <form method="post" action="track.php" id="formSend" onsubmit="return saveTrack();" data-ajax="false">
+                <h2> So....you are dancing:</h2>
+                <fieldset>
+                    <div data-role="fieldcontain">
+                        <h3>The song:</h3>
+                        <p name="songShow" id="songNameShow"  ></p>
+                    </div> 
+                    <div data-role="fieldcontain">
+                        <h3>At:</h3>
+                        <p  name="placeShow" id="placeShow"  ></p>
+                    </div>
+                    
+                </fieldset>
+                <input type="hidden" name="idSong" value="" id="idSongH"/>
+                <input type="hidden" name="title" value="" id="titleSong" />
+                <input type="hidden" name="image" value="" />
+                <input type="hidden" name="description" value="danced track"  />
+                <input type="hidden" name="placeId" value="" id="idPlace"/>
+                <input type="hidden" name="urlSong" value="" id="urlSong" />
+                <button type="submit" value="dance" name="dance" data-role="button" >Dance!</a>
+                    </form>
+        </div>
+    </div>
+    </div>
 
-			</ul>
-		</div>
-		<div data-theme="a" data-role="footer" data-position="fixed">
-			<div data-role="navbar">
-				<ul>
-					<li><a href="#page1" data-theme="a"> Profile </a></li>
-					<li><a href="#page1" data-theme="a"> Friends </a></li>
-				</ul>
-			</div>
-
-		</div>
-	</div>
+    
 	<div id="fb-root"></div>
 	<!-- cordova -->
 	<script src="cordova-2.0.0.js"></script>
