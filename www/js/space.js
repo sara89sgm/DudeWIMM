@@ -9,7 +9,7 @@ var idSongObj='';
 
 var config = {
 apiKey: 'T453P2YRIR0F3EAT4EHD2NX3RAUJIAJATTCJX2DM5H3CYHVY',
-authUrl: 'http://www.dudewimm.com',
+authUrl: 'https://foursquare.com/',
 apiUrl: 'https://api.foursquare.com/'
 };
 
