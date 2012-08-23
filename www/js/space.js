@@ -89,6 +89,7 @@ function getLocations()
                                                  localStorage.lng = data['coords']['longitude'];
                                                  getPlaces();}
                                                  );
+      
     } else {
         error('Geolocation is not supported.');
     }
@@ -112,20 +113,7 @@ function getPlaces(){
                                         venues[i]['venue']['location']['lat'],
                                         venues[i]['venue']['location']['lng']
                                         );
-              /* Build icon for each icon */
-              var leafletIcon = L.Icon.extend({
-                                              iconUrl: venues[i]['venue']['categories'][0]['icon'],
-                                              shadowUrl: null,
-                                              iconSize: new L.Point(32,32),
-                                              iconAnchor: new L.Point(16, 41),
-                                              popupAnchor: new L.Point(0, -51)
-                                              });
-              var icon = new leafletIcon();
-              var marker = new L.Marker(latLng, {icon: icon})
-              .bindPopup(venues[i]['venue']['name'], { closeButton: false })
-              .on('mouseover', function(e) { this.openPopup(); })
-              .on('mouseout', function(e) { this.closePopup(); });
-              map.addLayer(marker);
+              alert("venue"+venues[i]['venue']['name']);
               }
               })
 });
