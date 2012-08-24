@@ -1,0 +1,23 @@
+{
+	"BundleType": "Application",
+	"AppName": {
+		"en": "wimm"
+	},
+	"BundleIdentifier": "wimm",
+	"BundleType": "Application",
+	"AppIcon": {
+		"18x18": "festudy-icon.jpg"
+	},
+	"SupportedLanguages": [
+		"en"
+	],
+	"RequiredPermissions": [
+		"http://*.echonest.com",
+		"https://*.echonest.com",
+		"http://*.setlist.fm",
+		"http://tracking.musixmatch.com/",
+		"http://api.musixmatch.com",
+		"http://ws.audioscrobbler.com"
+		
+	]
+}

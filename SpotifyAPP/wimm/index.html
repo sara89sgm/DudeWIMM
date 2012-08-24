@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <style>
+            @import url('sp://import/css/eve.css');
+	    @import url('sp://import/css/player.css');
+	@import url('sp://import/css/list.css');
+            @import url('sp://tutorial/css/main.css');
+            @import url('sp://tutorial/css/github.css');
+        </style>
+
+	<script type="text/javascript" src="sp://wimm/js/jquery.min.js"></script>
+
+        <script>
+	/* Instantiate the global sp object; include models & views */
+	var sp = getSpotifyApi(1);
+	var models = sp.require("sp://import/scripts/api/models");
+	var views = sp.require("sp://import/scripts/api/views");
+		
+	ECHONEST_API_KEY = "3XTBY4BG7RBHOR18L";
+	var SONGS = new Array();
+	var BREAK_COUNT = 0;
+	var COUNT = 0;
+	
+	
+	function createPlaylist(){
+		var playlist = new models.Playlist();
+		console.log(SONGS.length);
+		for (i=0; i<SONGS.length; i++){
+			var track = models.Track.fromURI('spotify:track:'+SONGS[i]);
+			/* Create a temporary playlist for the song */
+			playlist.add(track);
+		}
+		
+		/* Create a "view" for the playlist and pass the list
+                 * code to the #player <div /> */
+                var playlist = new views.List(playlist);
+                var playerHTML = document.getElementById('player');
+                playerHTML.appendChild(playlist.node);
+		
+	}
+	
+	
+	function getSongSpotifyUri(song_echonest_id){
+		var echonest_url = "http://developer.echonest.com/api/v4/song/profile?api_key="+ECHONEST_API_KEY+"&id="+song_echonest_id+"&bucket=id:spotify-WW&bucket=tracks"+"&format=jsonp&callback=?";
+		var spotify_uri = null;
+		//console.log(echonest_url);
+		$.ajax({url: encodeURI(echonest_url), 
+			dataType: 'jsonp',
+			//async: false,
+			success: function(data) {
+				BREAK_COUNT -= 1;
+				if (data.response.status.message == "Success"){
+					if (data.response.songs[0].tracks.length > 0){
+						song_spotify_uri = data.response.songs[0].tracks[0].foreign_id;
+						prefix = "spotify-WW:track:";
+						song_spotify_uri = song_spotify_uri.substring(prefix.length);
+						spotify_uri = song_spotify_uri;
+						SONGS.push(spotify_uri);
+					}/*else{
+						console.log("NO_SONG_SPOTIFY_ID: " + BREAK_COUNT);
+					}*/
+					
+					console.log("BREAK_COUNT: "+BREAK_COUNT);
+					if (BREAK_COUNT <= 0){
+						console.log("similar_songs["+SONGS.length+"]: "+SONGS);
+						createPlaylist();
+					}
+				}
+			}
+		});
+	}
+	
+	
+	function getArtistSong(artist_echonest_id){
+		var echonest_url = "http://developer.echonest.com/api/v4/artist/songs?api_key="+ECHONEST_API_KEY+"&id="+artist_echonest_id+"&start=0&results=1&format=jsonp&callback=?";
+		//console.log(encodeURI(echonest_url));
+		$.ajax({url: encodeURI(echonest_url), 
+			dataType: 'jsonp',
+			success: function(data) {
+				if (data.response.status.message == "Success"){
+					if (data.response.songs.length > 0){
+						song_echonest_id = data.response.songs[0].id;
+						getSongSpotifyUri(song_echonest_id);
+					}else{
+						BREAK_COUNT -= 1;
+						console.log("NO_SONGS: " + BREAK_COUNT);
+					}
+				}else{
+					BREAK_COUNT -= 1;
+				}
+			}
+		});
+	}
+	
+	/* Returns a list of similar artists to a given one */
+	function getSimilarSongsToArtist(uri, decade){
+		var iDecade = parseInt(decade);
+		var echonest_url = "http://developer.echonest.com/api/v4/artist/similar?api_key="+ECHONEST_API_KEY+"&id=spotify-WW:artist:"+uri+"&bucket=id:spotify-WW&artist_start_year_after="+(iDecade-5)+"&artist_end_year_before="+(iDecade+10)+"&results="+5+"&format=jsonp&callback=?";
+		//console.log(encodeURI(echonest_url));
+		$.ajax({url: encodeURI(echonest_url), 
+			dataType: 'jsonp',
+			success: function(data) {
+				if (data.response.status.message == "Success"){
+					console.log("ARTIST: "+uri+" --> SIMILAR_ARTISTS: "+data.response.artists.length);
+					BREAK_COUNT += data.response.artists.length-1;
+					console.log("-->BREAK_COUNT: "+BREAK_COUNT);
+					for(i=0; i<data.response.artists.length; i++){
+						//console.log("Artist: "+data.response.artists[i].id+"-->"+data.response.artists[i].foreign_ids);
+						artist_echonest_id = data.response.artists[i].id;
+						if (data.response.artists[i].foreign_ids != undefined){
+							artist_spotify_uri = data.response.artists[i].foreign_ids[0].foreign_id;
+							prefix = "spotify-WW:artist:";
+							artist_spotify_uri = artist_spotify_uri.substring(prefix.length);
+							getArtistSong(artist_echonest_id);
+						}else{
+							console.log("spotify_foreign_id UNDEFINED");
+							BREAK_COUNT -= 1;
+						}
+					}
+				}else{
+					console.log(encodeURI(echonest_url));
+					BREAK_COUNT -= 1;
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log('Error: ' + textStatus);
+			}
+		});
+	}
+		
+	function getTopTracksArtists(results){
+		var visited_artists = new Array();
+		for(i=0;i<results.length;i++){
+			artist_spotify_uri = results[i].artists[0].uri;
+			if ($.inArray(artist_spotify_uri, visited_artists) == -1){
+				visited_artists.push(artist_spotify_uri);
+			}
+		}
+		return visited_artists;
+	}
+
+	window.onload = function() {
+
+	    var toplist = new models.Toplist();
+	    var similar_songs = new Array();
+	    /* Set attributes of the Toplist object */
+	    //toplist.toplistType = models.TOPLISTTYPE.REGION;
+	    //toplist.region = "FR"; 
+	    toplist.userName = models.TOPLISTUSER_CURRENT;
+	    toplist.matchType = models.TOPLISTMATCHES.TRACKS;
+
+	    var toplistHTML = document.getElementById('toplist');
+
+	    toplist.observe(models.EVENT.CHANGE, function() {
+		var results = toplist.results;
+		var temp_similar_songs = new Array();
+		max_length = 0;
+		window.console.log(results.length);
+		
+		BREAK_COUNT = 10;//hardcoded, results.length;
+		var visited_artists = new Array();
+		
+		top_tracks_artists = getTopTracksArtists(results);
+		for(i=0;i<10;i++){
+			artist_spotify_uri = top_tracks_artists[i];
+			console.log("artist_spotify_uri: "+artist_spotify_uri);
+			if ($.inArray(artist_spotify_uri, visited_artists) == -1){
+				visited_artists.push(artist_spotify_uri);
+				prefix = "spotify:artist:";
+				artist_spotify_uri = artist_spotify_uri.substring(prefix.length);
+				getSimilarSongsToArtist(artist_spotify_uri, 1990);
+			}
+		}
+	    });
+	    toplist.run();
+	    
+	}
+        </script>
+    </head>
+    <body>
+        <div id="wrapper">
+            <ul class="breadcrumb">
+                <li><a href="sp://tutorial/index.html">&laquo; Back to main page</a></li>
+            </ul>
+
+            <h1>Get a user's top tracks</h1>
+            <p class="description">Using the Toplist model, let's see what the current user's most-listened to tracks.</p>
+
+            <h3>Live Example</h3>
+            <ul id="toplist"></ul>
+	    <div id="player"></div>
+        </div><!-- /wrapper -->
+    </body>
+</html>
