@@ -1,0 +1,230 @@
+html, body, form, fieldset, p, div, h1, h2, h3, h4, h5, h6 {
+  -webkit-text-size-adjust:none;
+}
+
+body {
+  background-color: #fff;
+  font: 12px Arial;
+  margin: 0px;
+  padding: 0px;
+  color: #323232;
+}
+
+body.connected .show_when_not_connected {
+ display: none;
+}
+
+body.connected .show_when_connected {
+ display: block;
+}
+
+body.not_connected .show_when_not_connected {
+ display: block;
+}
+
+body.not_connected .show_when_connected {
+ display: none;
+}
+
+body.permissioned .show_when_not_connected {
+ display: none;
+}
+
+body.not_permissioned .show_when_not_connected {
+ display: none;
+}
+
+body.permissioned #extended_permission_button {
+ display: none;
+}
+
+body.not_permissioned #extended_permission_button {
+ display: block;
+}
+
+#action {
+  display: none;
+  position: fixed;
+  background-color: #fff;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+  font-size: 1.5em;
+  font-weight: bold;
+  width: 100%;
+  height: 1250px;
+  text-align: center;
+  color: #323232;
+  padding-top: 100px;
+  z-index: 99;
+}
+
+#action #msg {
+  position: relative;
+  margin: 0px auto;
+}
+
+#action #loading-icon {
+  background: url('../img/loader.gif');
+  position: relative;
+  margin: 0px auto;
+  width: 16px;
+  height: 11px;
+  margin-bottom: 15px;
+}
+
+
+#user-picture {
+  width: 45px;
+  height: 45px;
+}
+
+
+
+body.permissioned .show_when_not_permissioned {
+ display: none;
+}
+
+body .show_when_not_permissioned {
+ display: none;
+}
+
+body .show_when_permissioned {
+ display: block;
+}
+
+body.permissioned .show_when_permissioned {
+ display: block;
+}
+
+body.not_permissioned .show_when_not_permissioned {
+ display: block;
+}
+
+body.not_permissioned .show_when_permissioned {
+ display: none;
+}
+
+body.not_connected .show_when_not_permissioned {
+ display: block;
+}
+
+body.not_connected .show_when_permissioned {
+ display: none;
+}
+
+#fb-content {
+  margin-top: 10px;
+}
+
+
+.login-button {
+  background:url(https://s-static.ak.fbcdn.net/images/connect_sprite.png) no-repeat scroll left -188px #29447e;
+  display:inline-block;
+  line-height:14px;
+  outline:medium none;
+  padding:0 0 0 1px
+}
+
+.login-button span {
+  background:url(https://s-static.ak.fbcdn.net/images/connect_sprite.png) repeat scroll 0 0 #5f78ab;
+  border-bottom:1px solid #1a356e;
+  border-top:1px solid #879ac0;
+  color:#fff;
+  cursor:pointer;
+  display:block;
+  font-size:11px;
+  font-weight:bold;
+  margin:1px 1px 0 21px;
+  padding:2px 6px 3px;
+  font-family: 'Lucida Grande', Verdana, Arial, sans-serif;
+}
+
+#user-friends {
+  margin: 0px 0px 20px 30px;
+}
+
+#user-friends img {
+  width: 32px;
+  height: 32px;
+  margin-right: 5px;
+}
+
+#checkins {
+  margin: 0px 0px 20px 30px;
+}
+
+#locations-nearby {
+  margin: 0px 0px 20px 30px;
+}
+
+#user-info {
+  margin: 0px 0px 20px 30px;
+}
+
+.place {
+  float: left;
+  clear: both;
+}
+
+.place .picture {
+  float: left;
+  clear: none;
+  margin: 2px;
+}
+
+.place .info {
+  float: left;
+  clear: none;
+}
+
+.place .name {
+  float: left;
+  clear: both;
+  margin: 5px;
+}
+
+.place .check-in-button {
+  float: left;
+  clear: both;
+}
+
+body.not_connected .button-requires-connect {
+  display: none;
+}
+
+.info-requires-connect {
+  font-weight: bold;
+  margin: 10px 0px 15px 10px;
+}
+
+body.connected .info-requires-connect {
+  display: none;
+}
+
+body.not_permissioned .info-requires-connect {
+  display: none;
+}
+
+body.permissioned .info-requires-connect {
+  display: none;
+}
+
+.place .check-in-msg {
+  float: left;
+  clear: both;
+  margin: 3px 0px 0px 5px;
+  font-style: italic;
+}
+
+.data-header {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+#like-button {
+  float: left;
+  clear: both;
+  width: 90%; 
+  margin: 10px 0px 35px 15px;
+  overflow: hidden;
+}
