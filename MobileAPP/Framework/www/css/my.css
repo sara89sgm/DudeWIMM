@@ -4,3 +4,5 @@
 .text-align-right {
   text-align: right;
 }
+
+#map_object {border:1px solid #333;margin:0;padding:0;}

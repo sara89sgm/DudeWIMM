@@ -17,15 +17,16 @@ navigator.geolocation.getCurrentPosition(function(data) {
 function getPlacesMap(){
    
     
-    /*var myLatlng = new google.maps.LatLng(localStorage.lat, localStorage.lng);
-    
-    var myOptions = {
-    center: myLatlng,
-    zoom: 11,
-    mapTypeId: google.maps.MapTypeId.HYBRID
-    };
-    map_element = document.getElementById("map_canvas");
-    var map = new google.maps.Map(map_element, myOptions);*/
+    var map_object;
+    function initialize() {
+        var myOptions = {
+        zoom: 15,
+        center: new google.maps.LatLng(37.7879938,-122.4074374),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map_object = new google.maps.Map(document.getElementById('map_object'), myOptions);
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
    
     
     FB.api('search?center='+localStorage.lat+','+localStorage.lng, { limit: 10, type: 'place', distance : 1000 }, function(response) {
@@ -36,13 +37,8 @@ function getPlacesMap(){
            while(((typeof(place)) != 'undefined') && (i<10)){
            
            
-         /*  var latitudeAndLongitudeOne = new google.maps.LatLng(place.location.latitude,place.location.longitude);
+     
            
-           var markerOne = new google.maps.Marker({
-                                                  position: latitudeAndLongitudeOne,
-                                                  map: map
-                                                  });
-           */
                       
            showGenre(place.id, place.name);
       
@@ -66,11 +62,12 @@ function showGenre(venueID, placeName){
     var query = new Parse.Query(VenuesGenre);
     query.equalTo("venueID", venueID);
     query.find({
-                success: function(object) {
-                alert(object.length);
-                if(object.length>0){
-                alert("encontrado"+placeName+" "+venueID);
-                $("#listPlacesNow").append('<li><a href="#" ><h3>'+object.get("venueID")+' ('+object.get("genre")+')</h3></a></li>');
+                success: function(results) {
+                
+                if(results.length>0){
+               
+                $("#listPlacesNow").append('<li><a href="#" ><h3>'+results[0].get("genre")+' - '+results[0].get("venueName")+'</h3></a></li>');
+               $("#listPlacesNow").listview('refresh');
                 }else{
                 var venuesTracks = Parse.Object.extend("VenuesTracksTest");
                 var query = new Parse.Query(venuesTracks);
@@ -80,10 +77,12 @@ function showGenre(venueID, placeName){
                            success: function(results) {
                            if(results.length>0){
                            alert("encontrado pero calculando");
-                           getTopGenreForSpecificVenue(place.id);
-                           setTimeout('showGenre('+venueID+','+placeName+')', 3000);
+                           getTopGenreForSpecificVenue(venueID);
+                           setTimeout('showGenre('+venueID+','+placeName+')', 1000);
                            }else{
-                           alert("There is no data for that location: "+placeName);
+                           
+                           //$("#listPlacesNow").append('<li><a href="#" ><h3>'+placeName+'</h3></a></li>');
+                             //$("#listPlacesNow").listview('refresh');
                            }
                            
                            },
@@ -131,6 +130,7 @@ function searchSong(){
 
 
 function fillResults(data){
+    $("#listResults").empty();
     var track=data.tracks[0];
     var i=0;
     
@@ -190,13 +190,14 @@ function getLocations()
 function getPlaces(){
     
     FB.api('search?center='+localStorage.lat+','+localStorage.lng, { limit: 10, type: 'place', distance : 1000 }, function(response) {
-           
+           alert("here");
            var place=response.data[0];
            var i=0;
            
            while(((typeof(place)) != 'undefined') && (i<10)){
-           var pars="'"+place.id+"','"+place.name+"','"+place.location.latitude+"','"+place.location.longitude+"'";
-           $("#listResultsLocations").append('<li><a href="#presend" onclick="savePlace('+pars+');"><h3>'+place.name+' </h3></a></li>');
+           var par="'"+place.id+"','"+place.name+"'";
+           alert("par:"+par);
+           $("#listResultsLocations").append('<li><a href="#presend" onclick="saveData('+par+')"><h3>'+place.name+' </h3></a></li>');
            i++;
            place=response.data[i];
            
@@ -209,19 +210,18 @@ function getPlaces(){
                 
 }
 
-function savePlace(id,name,latitude,longitude){
+function saveData(id,name){
     
-    localStorage.venueId=id;
+    localStorage.venueID=id;
     localStorage.venueName=name;
-    lat=localStorage.lat;
-    long=localStorage.long;
+    alert("venueName"+venueName);
     setValuestoShow();
     
 }
 
 function setValuestoShow(){
     
-    $("#songNameShow").append(""+nameSongSelected+"at "+placeName);
+    $("#finalMusic").append(""+localStorage.nameSongSelected+"at "+localStorage.venueName);
    
 }
 
@@ -232,7 +232,7 @@ function saveTrackMusic(){
     var venueTrack = new VenuesTracksTest();
     venueTrack.set("artistID", localStorage.artistID);
     venueTrack.set("trackID", localStorage.trackID);
-    venueTrack.set("venueID", localStorage.venueId);
+    venueTrack.set("venueID", localStorage.venueID);
     venueTrack.set("venueName", localStorage.venueName);
     
     venueTrack.save(null, {

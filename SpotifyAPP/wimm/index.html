@@ -5,18 +5,28 @@
         <style>
             @import url('sp://import/css/eve.css');
 	    @import url('sp://import/css/player.css');
-	@import url('sp://import/css/list.css');
+	    @import url('sp://import/css/list.css');
             @import url('sp://tutorial/css/main.css');
             @import url('sp://tutorial/css/github.css');
+             #map_object {border:1px solid #333;margin:0;padding:0;}
         </style>
 
 	<script type="text/javascript" src="sp://wimm/js/jquery.min.js"></script>
-
+	<link rel="Stylesheet" href="sp://wimm/jquery-ui/css/dark-hive/jquery-ui-1.8.23.custom.css" type="text/css" />
+	<link rel="Stylesheet" href="sp://wimm/css/ui.selectmenu.css" type="text/css" />
+	<link rel="Stylesheet" href="sp://wimm/css/styles.css" type="text/css" />
+	<script type="text/javascript" src="sp://wimm/jquery-ui/js/jquery-ui-1.8.23.custom.min.js"></script>
+	<script type="text/javascript" src="sp://wimm/js/ui.selectmenu.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+   
+<script type="text/javascript" src="space.js"></script>
+<script type="text/javascript" src="js/genre.js"></script>
         <script>
 	/* Instantiate the global sp object; include models & views */
 	var sp = getSpotifyApi(1);
 	var models = sp.require("sp://import/scripts/api/models");
 	var views = sp.require("sp://import/scripts/api/views");
+        var auth = sp.require('sp://import/scripts/api/auth');
 		
 	ECHONEST_API_KEY = "3XTBY4BG7RBHOR18L";
 	var SONGS = new Array();
@@ -24,19 +34,37 @@
 	var COUNT = 0;
 	
 	
+	function tabs() {
+		var args = models.application.arguments;
+		var current = document.getElementById(args[0]);
+		var sections = document.getElementsByClassName('section');
+		for (i=0;i<sections.length;i++){
+			sections[i].style.display = 'none';
+		}
+		current.style.display = 'block';
+	}
+	
+	
+	//Initialize Facebook
+	var accessTokenFB='';
+	
+    
+	
 	function createPlaylist(){
-		var playlist = new models.Playlist();
+		var tempPlaylist = new models.Playlist();
 		console.log(SONGS.length);
 		for (i=0; i<SONGS.length; i++){
 			var track = models.Track.fromURI('spotify:track:'+SONGS[i]);
 			/* Create a temporary playlist for the song */
-			playlist.add(track);
+			tempPlaylist.add(track);
 		}
 		
 		/* Create a "view" for the playlist and pass the list
                  * code to the #player <div /> */
-                var playlist = new views.List(playlist);
+                var playlist = new views.List(tempPlaylist);
+		$("#player").html("");
                 var playerHTML = document.getElementById('player');
+		
                 playerHTML.appendChild(playlist.node);
 		
 	}
@@ -141,56 +169,135 @@
 		return visited_artists;
 	}
 
-	window.onload = function() {
-
-	    var toplist = new models.Toplist();
-	    var similar_songs = new Array();
-	    /* Set attributes of the Toplist object */
-	    //toplist.toplistType = models.TOPLISTTYPE.REGION;
-	    //toplist.region = "FR"; 
-	    toplist.userName = models.TOPLISTUSER_CURRENT;
-	    toplist.matchType = models.TOPLISTMATCHES.TRACKS;
-
-	    var toplistHTML = document.getElementById('toplist');
-
-	    toplist.observe(models.EVENT.CHANGE, function() {
-		var results = toplist.results;
-		var temp_similar_songs = new Array();
-		max_length = 0;
-		window.console.log(results.length);
+	function decades(decade){
+		$("#decade").html(decade);
+		SONGS = new Array();
+		var toplist = new models.Toplist();
+		var similar_songs = new Array();
+		// Set attributes of the Toplist object 
+		//toplist.toplistType = models.TOPLISTTYPE.REGION;
+		//toplist.region = "FR"; 
+		toplist.userName = models.TOPLISTUSER_CURRENT;
+		toplist.matchType = models.TOPLISTMATCHES.TRACKS;
+		var toplistHTML = document.getElementById('toplist');
 		
-		BREAK_COUNT = 10;//hardcoded, results.length;
-		var visited_artists = new Array();
-		
-		top_tracks_artists = getTopTracksArtists(results);
-		for(i=0;i<10;i++){
-			artist_spotify_uri = top_tracks_artists[i];
-			console.log("artist_spotify_uri: "+artist_spotify_uri);
-			if ($.inArray(artist_spotify_uri, visited_artists) == -1){
-				visited_artists.push(artist_spotify_uri);
-				prefix = "spotify:artist:";
-				artist_spotify_uri = artist_spotify_uri.substring(prefix.length);
-				getSimilarSongsToArtist(artist_spotify_uri, 1990);
+		toplist.observe(models.EVENT.CHANGE, function() {
+			var results = toplist.results;
+			var temp_similar_songs = new Array();
+			max_length = 0;
+			window.console.log(results.length);
+			
+			BREAK_COUNT = 5;//hardcoded, results.length;
+			var visited_artists = new Array();
+			
+			top_tracks_artists = getTopTracksArtists(results);
+			$("#player").empty().html('<img src="ajax-loader.gif" style="text-align:center;"/>');
+			for(i=0;i<10;i++){
+				artist_spotify_uri = top_tracks_artists[i];
+				console.log("artist_spotify_uri: "+artist_spotify_uri);
+				if ($.inArray(artist_spotify_uri, visited_artists) == -1){
+					visited_artists.push(artist_spotify_uri);
+					prefix = "spotify:artist:";
+					artist_spotify_uri = artist_spotify_uri.substring(prefix.length);
+					getSimilarSongsToArtist(artist_spotify_uri, decade);
+				}
 			}
-		}
-	    });
-	    toplist.run();
-	    
+		});
+		toplist.run();
 	}
+	
+	window.onload = function() {
+		$('select#decadeSelect').selectmenu({width: 100});
+		$("select#decadeSelect").change(function () {
+			//var str = "";
+			$("select option:selected").each(function () {
+			      //str +=  + " ";
+			      decades($(this).attr('value'));
+			});
+			/*console.log("SELECTED: "+str);*/
+		});
+		tabs();
+		models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
+                 /* Set the permissions you want from the user. For more
+         * info, check out http://bit.ly/A4KCW3 */
+        var permissions = ['user_about_me'];
+        var app_id = '403799456325756';
+        var fbButtonHTML = document.getElementById('fb-login');
+
+        fbButtonHTML.addEventListener('click', authFB);
+
+        function authFB() {
+            auth.authenticateWithFacebook(app_id, permissions, {
+                onSuccess: function(accessToken, ttl) {
+                	accessTokenFB=accessToken;
+                	
+                	console.log("logged fb");
+                        $("#fb-login").hide();
+                        showMap();
+                    
+                },
+                onFailure: function(error) {
+                    console.log('Authentication failed with error: ' + error);
+                },
+                onComplete: function() { }
+            });
+	}
+        }
+        
+        var map_object;
+            function initialize() {
+                var myOptions = {
+                    zoom: 15,
+                    center: new google.maps.LatLng(37.7879938,-122.4074374),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                map_object = new google.maps.Map(document.getElementById('map_object'), myOptions);
+            }
+            google.maps.event.addDomListener(window, 'load', initialize);
         </script>
     </head>
     <body>
         <div id="wrapper">
-            <ul class="breadcrumb">
-                <li><a href="sp://tutorial/index.html">&laquo; Back to main page</a></li>
-            </ul>
+	    <div id="home" class="section">
+		<h1>WIMM: Where Is My Music, dude?</h1>
+	    </div>
+	    <div id="decades" class="section">
+		<h1>If I lived in the <span id="decade">??</span>s</h1>
+		
+		<div id="selectDecade">
+			<form action="#">
+				<fieldset>
+					<label for="speedA">Select a Decade:</label>
+					<select name="decadeSelect" id="decadeSelect">
+						<option value="1940">1940s</option>
+						<option value="1950">1950s</option>
+						<option value="1960">1960s</option>
+						<option value="1970">1970s</option>
+						<option value="1980">1980s</option>
+						<option value="1990">1990s</option>
+						<option value="2000">2000s</option>
+					</select>
+				</fieldset>
+			</form>
+			<p class="description">What kind of music I would have been listening to if I lived back then</p>
+		</div>
+		
+		
+		<div id="player"></div>
+	    </div>
+	    <div id="pubs" class="section">
+         <h1>What kind of music are the pubs playing??</h1>
+       <a href="#" id="fb-login"> <img src="img/fb-login.png" /></a>
 
-            <h1>Get a user's top tracks</h1>
-            <p class="description">Using the Toplist model, let's see what the current user's most-listened to tracks.</p>
-
-            <h3>Live Example</h3>
-            <ul id="toplist"></ul>
-	    <div id="player"></div>
+					
+         
+        <div id="map_object" style="width:800px;height:400px;"></div>
+			<ul data-role="listview" data-divider-theme="b" data-inset="true" id="listPlacesNow">
+			
+                
+			</ul>
+	    </div>
+            
         </div><!-- /wrapper -->
     </body>
 </html>

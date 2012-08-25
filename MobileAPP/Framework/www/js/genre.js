@@ -7,7 +7,7 @@ function getTopGenreForSpecificVenue(venueID) {
 	genres=null;
 	genres=new Array();
 	//empty genres...? or not? what is the scope and durability of the global variable genres?
-	
+	alert("calculando"+venueID);
 	getArtistsForSpecificVenue(venueID);	
 }
 
@@ -48,7 +48,7 @@ function getArtistsForSpecificVenue(venueID) {
  						
  						//when the artists are finished calculate the top genre above all
  						if (j==(results.length)) {
-    						calculateTopGenre(venueID);
+    						calculateTopGenre(venueID,results[i].get("venueName"));
     					}
 
 					},
@@ -86,7 +86,8 @@ function fillGenresArray(data) {
 
 //uses global genres array
 //stores the most common genre accross all the artists in a specific venue in the VenuesGenre table
-function calculateTopGenre(venueID) {
+function calculateTopGenre(venueID,venueName) {
+    alert("calcular top"+venueID);
 	var availableGenres = new Array();
 	
 	availableGenres["pop"]=0;
@@ -150,13 +151,13 @@ function calculateTopGenre(venueID) {
 	var venuesGenre = new VenuesGenre();
 
 	venuesGenre.set("venueID", venueID);
-    
+    venuesGenre.set("venueName", venueName);
 	venuesGenre.set("genre", genre);
 	venuesGenre.set("time", time);
 
 	venuesGenre.save(null, {
   		success: function(venuesGenre) {
-    		//console.log("save worked!");
+                     alert("Calculado"+genre);
   		},
   		error: function(venuesGenre, error) {
     		console.log("save to VenuesGenre failed :(!");

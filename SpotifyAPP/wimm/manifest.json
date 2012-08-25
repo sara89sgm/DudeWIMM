@@ -11,13 +11,38 @@
 	"SupportedLanguages": [
 		"en"
 	],
+	"DefaultTabs": [
+		{
+			"arguments": "home",
+			"title": {
+				"en": "Home"
+			}
+		}, 
+		{
+			"arguments": "decades",
+			"title": {
+				"en": "Decades"
+			}
+		},
+		{
+			"arguments": "pubs",
+			"title": {
+				"en": "Pubs"
+			}
+		}
+	],
 	"RequiredPermissions": [
 		"http://*.echonest.com",
 		"https://*.echonest.com",
 		"http://*.setlist.fm",
 		"http://tracking.musixmatch.com/",
 		"http://api.musixmatch.com",
-		"http://ws.audioscrobbler.com"
+		"http://ws.audioscrobbler.com",
+"https://*.googleapis.com",
+    "https://*.gstatic.com",
+    "https://*.gmaptiles.co.kr",
+    "https://earthbuilder.google.com",
+    "https://earthbuilder.googleapis.com"
 		
 	]
 }

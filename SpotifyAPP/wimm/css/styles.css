@@ -1,5 +1,5 @@
 body {
-    margin-left:20px;
+    margin-top:10px;
 }
 
 .clear {
@@ -8,24 +8,41 @@ body {
 
 h1 {
     font-size:24px;
-    margin: 30px;
+    text-align: center;
 }
 
 .left {
 	float:left;
 }
 
+#selectDecade{
+    margin-left: 2px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#selectDecade form fieldset select{
+    text-align: center;
+}
+
+/*
 .inp {
     border-radius: 14px;
     -webkit-border-radius:14px;
     padding-left:14px;
     padding-right:14px;
-}
+}*/
+
+
 
 button {
     -webkit-border-radius:4px;
 }
 
+form fieldset #decadeSelect{
+    text-align: center;
+}
+/*
 #info {
     margin-top:10px;
     margin-left: 20px;
@@ -63,7 +80,8 @@ ul {
 }
 a {
 	color:#eeeeee;
-}
+}*/
+/*
 #search-term {
 	width:200px;
 }
@@ -88,7 +106,7 @@ a {
 #search-results .sp-list {
 	width:inherit;
 	max-height:inherit;
-}
+}*/
 
 #title {
     font-size:33px;
@@ -96,8 +114,8 @@ a {
     margin-top:20px;
     margin-bottom:20px;
 }
-
+/*
 #tagline {
     margin-left:20px;
     font-style: italic;
-}
+}*/
